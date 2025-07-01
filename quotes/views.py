@@ -20,3 +20,19 @@ def random_quote(request):
             selected = quote
             break
     return render(request, 'quotes/random.html',{'quote': selected})
+
+from django.views.decorators.http import require_POST
+
+@require_POST
+def vote_quote(request, pk):
+    quote = get_object_or_404(Quote, pk=pk)
+    action = request.POST.get('action')
+    if action == 'like':
+        quote.likes = F('likes') + 1
+    elif action == 'dislike':
+        quote.dislikes = F('dislikes') + 1
+    else:
+        return JsonResponse({'error': 'Invalid action'}, status=400)
+    quote.save(update_fields=['likes', 'dislikes'])
+    quote.refresh_from_db()
+    return JsonResponse({'likes': quote.likes, 'dislikes': quote.dislikes})
