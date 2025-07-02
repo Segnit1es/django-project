@@ -17,9 +17,5 @@ class Quote(models.Model):
     class Meta:
         unique_together = ('source', 'text')
 
-    def clean(self):
-        if self.source.quotes.exclude(pk=self.pk).count() >= 3:
-            raise ValidationError(f'У источника "{self.source}" не может быть более трёх цитат.')
-
     def __str__(self):
         return f'"{self.text[:50]}…" — {self.source}'

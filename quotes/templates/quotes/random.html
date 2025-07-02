@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Случайная цитата</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    function vote(action) {
+      fetch("{% url 'quotes:vote' quote.pk %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({ 'action': action })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          document.getElementById('likes-count').innerText = '👍' + data.likes;
+          document.getElementById('dislikes-count').innerText = '👍' + data.dislikes;
+        }
+      })
+      .catch(() => alert('Ошибка сети'));
+    }
+  </script>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    blockquote { font-size: 1.2rem; margin: 1rem 0; }
+    button { margin-right: 0.5rem; padding: 0.5rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Случайная цитата</h1>
+  <blockquote>{{ quote.text }}</blockquote>
+  <p><em>{{ quote.source.name }}</em></p>
+  <p>Просмотры: {{ quote.view_count }}</p>
+  <button id="likes-count" onclick="vote('like')">👍 {{ quote.likes }}</button>
+  <button id="dislikes-count" onclick="vote('dislike')">👎 {{ quote.dislikes }}</button>
+  <hr>
+  <p> 
+    <a href="{% url 'quotes:add' %}">Добавить цитату</a> |
+    <a href="{% url 'quotes:top' %}">Топ‑10 цитат</a>
+  </p>
+</body>
+</html>

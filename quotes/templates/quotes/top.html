@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Топ‑10 цитат</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    blockquote { margin: 0.5rem 0; }
+    li { margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Топ‑10 цитат</h1>
+  <ol>
+    {% for quote in top_list %}
+      <li>
+        <blockquote>{{ quote.text }}</blockquote>
+        <p><em>{{ quote.source.name }}</em></p>
+        <p>👍 {{ quote.likes }}  |  просмотров: {{ quote.view_count }}</p>
+      </li>
+    {% empty %}
+      <li>Пока нет цитат.</li>
+    {% endfor %}
+  </ol>
+  <p>
+    <a href="{% url 'quotes:random' %}">Случайная цитата</a> |
+    <a href="{% url 'quotes:add' %}">Добавить цитату</a>
+  </p>
+</body>
+</html>
